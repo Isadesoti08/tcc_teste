@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Movimentar Estoque - Locate Toy{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('products.detail', product_id=product.id) }}" class="btn btn-sm btn-outline-secondary mb-3">
+    <i class="bi bi-arrow-left"></i> Voltar
+</a>
+
+<h2>Movimentar Estoque</h2>
+<p class="text-muted">
+    <strong>{{ product.name }}</strong> (<code>{{ product.sku }}</code>) —
+    Estoque atual: <strong>{{ product.quantity }}</strong> unidade(s) —
+    Localização atual: {{ product.location_display() }}
+</p>
+
+<div class="section-card mb-4">
+<form method="POST" class="row g-3">
+    <div class="col-12">
+        <label class="form-label d-block">Tipo de movimentação</label>
+        <div class="btn-group" role="group">
+            <input type="radio" class="btn-check" name="movement_type" id="tipo-entrada" value="entrada" autocomplete="off" checked>
+            <label class="btn btn-outline-success" for="tipo-entrada"><i class="bi bi-arrow-up-circle"></i> Entrada</label>
+
+            <input type="radio" class="btn-check" name="movement_type" id="tipo-saida" value="saida" autocomplete="off">
+            <label class="btn btn-outline-danger" for="tipo-saida"><i class="bi bi-arrow-down-circle"></i> Saída</label>
+
+            <input type="radio" class="btn-check" name="movement_type" id="tipo-transferencia" value="transferencia" autocomplete="off">
+            <label class="btn btn-outline-primary" for="tipo-transferencia"><i class="bi bi-shuffle"></i> Transferência</label>
+        </div>
+    </div>
+
+    <div class="col-md-4" id="campo-quantidade">
+        <label class="form-label">Quantidade</label>
+        <input type="number" name="quantity" min="1" class="form-control">
+        <small class="text-muted">Usado em entradas e saídas.</small>
+    </div>
+
+    <div class="col-12" id="campos-transferencia" style="display: none;">
+        <div class="row g-3 p-3 bg-light rounded">
+            <div class="col-md-3">
+                <label class="form-label">Novo Corredor</label>
+                <input type="text" name="aisle" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Nova Prateleira</label>
+                <input type="text" name="shelf" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Nova Seção (opcional)</label>
+                <input type="text" name="section" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Novo Depósito/Área</label>
+                <input type="text" name="warehouse" class="form-control" value="Loja">
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <label class="form-label">Observações (opcional)</label>
+        <textarea name="notes" class="form-control" rows="2"></textarea>
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Registrar Movimentação</button>
+    </div>
+</form>
+</div>
+
+<h5>Histórico recente deste produto</h5>
+{% set historico = product.movements | sort(attribute="timestamp", reverse=True) %}
+{% if historico %}
+<div class="section-card">
+    {% for mov in historico[:5] %}
+    <div class="list-row">
+        {% if mov.movement_type == "entrada" %}
+        <div class="icon-tile tile-success"><i class="bi bi-arrow-up-circle"></i></div>
+        {% elif mov.movement_type == "saida" %}
+        <div class="icon-tile tile-danger"><i class="bi bi-arrow-down-circle"></i></div>
+        {% else %}
+        <div class="icon-tile tile-primary"><i class="bi bi-shuffle"></i></div>
+        {% endif %}
+        <div class="list-row-main">
+            <p class="list-row-title">{{ mov.movement_type | capitalize }}</p>
+            <p class="list-row-sub">
+                {% if mov.movement_type == "transferencia" %}
+                    de {{ mov.previous_location }} para {{ mov.new_location }}
+                {% else %}
+                    {{ mov.previous_quantity }} → {{ mov.new_quantity }} unidades
+                {% endif %}
+                — por {{ mov.user.name }}
+            </p>
+        </div>
+        <span class="list-row-time">{{ mov.timestamp.strftime("%d/%m/%Y %H:%M") }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">Nenhuma movimentação registrada ainda para este produto.</p>
+{% endif %}
+
+<script>
+    const radios = document.querySelectorAll('input[name="movement_type"]');
+    const campoQuantidade = document.getElementById('campo-quantidade');
+    const camposTransferencia = document.getElementById('campos-transferencia');
+
+    function atualizarCampos() {
+        const tipoSelecionado = document.querySelector('input[name="movement_type"]:checked').value;
+        if (tipoSelecionado === 'transferencia') {
+            campoQuantidade.style.display = 'none';
+            camposTransferencia.style.display = 'block';
+        } else {
+            campoQuantidade.style.display = 'block';
+            camposTransferencia.style.display = 'none';
+        }
+    }
+
+    radios.forEach(radio => radio.addEventListener('change', atualizarCampos));
+    atualizarCampos();
+</script>
+{% endblock %}

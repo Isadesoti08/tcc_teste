@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Produtos - Locate Toy{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Produtos</h2>
+    {% if current_user.role == "gerente" %}
+    <a href="{{ url_for('products.create') }}" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Novo Produto
+    </a>
+    {% endif %}
+</div>
+
+{% if products %}
+{% set category_icons = {
+    "Bonecos": "bi-emoji-smile",
+    "Pelúcias": "bi-heart",
+    "Jogos de Tabuleiro": "bi-dice-5",
+    "Veículos": "bi-truck",
+    "Educativos": "bi-mortarboard"
+} %}
+
+<div class="product-list-header d-none d-md-flex">
+    <span>Produto</span>
+    <div class="d-flex" style="gap: 1.5rem;">
+        <span class="meta-col">Categoria</span>
+        <span class="meta-col">Localização</span>
+        <span class="meta-col">Estoque</span>
+        <span style="width: 32px;"></span>
+    </div>
+</div>
+
+<div class="product-list">
+    {% for product in products %}
+    <div class="product-row {{ 'low-stock' if product.is_low_stock() else '' }}">
+        <a href="{{ url_for('products.detail', product_id=product.id) }}" class="product-info">
+            <div class="product-avatar">
+                {% if product.photo_filename %}
+                <img src="{{ url_for('static', filename='uploads/' + product.photo_filename) }}" alt="{{ product.name }}">
+                {% else %}
+                <i class="bi {{ category_icons.get(product.category, 'bi-box-seam') }}"></i>
+                {% endif %}
+            </div>
+            <div>
+                <p class="product-name">{{ product.name }}</p>
+                <p class="product-sku">{{ product.sku }}</p>
+            </div>
+        </a>
+
+        <div class="product-meta">
+            <span class="meta-col">{{ product.category }}</span>
+            <span class="meta-col">{{ product.location_display() }}</span>
+            <span class="meta-col status-pill {{ 'text-danger' if product.is_low_stock() else 'text-success' }}">
+                <span class="status-dot {{ 'low' if product.is_low_stock() else 'ok' }}"></span>
+                {{ product.quantity }} un.
+            </span>
+
+            <div class="product-actions">
+                {% if current_user.role == "gerente" %}
+                <div class="dropdown">
+                    <button class="btn" type="button" data-bs-toggle="dropdown" aria-label="Mais ações">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('products.edit', product_id=product.id) }}">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                        </li>
+                        <li>
+                            <form action="{{ url_for('products.delete', product_id=product.id) }}" method="POST"
+                                  onsubmit="return confirm('Tem certeza que deseja excluir este produto?');">
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="bi bi-trash"></i> Excluir
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">Nenhum produto cadastrado ainda.</p>
+{% endif %}
+{% endblock %}

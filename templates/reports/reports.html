@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Relatórios - Locate Toy{% endblock %}
+
+{% block content %}
+<h2 class="mb-3">Relatórios</h2>
+
+<ul class="nav nav-tabs mb-3" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-estoque-baixo" type="button">
+            <i class="bi bi-exclamation-triangle"></i> Estoque Baixo
+            <span class="badge bg-danger">{{ low_stock_products|length }}</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-mais-buscados" type="button">
+            <i class="bi bi-fire"></i> Mais Buscados
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-nao-encontrados" type="button">
+            <i class="bi bi-question-circle"></i> Buscas sem Resultado
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-ocupacao" type="button">
+            <i class="bi bi-geo-alt"></i> Ocupação
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="tab-estoque-baixo">
+        <div class="section-card">
+            {% if low_stock_products %}
+                {% for product in low_stock_products %}
+                <div class="list-row">
+                    <div class="icon-tile tile-danger"><i class="bi bi-box-seam"></i></div>
+                    <div class="list-row-main">
+                        <p class="list-row-title">
+                            <a href="{{ url_for('products.detail', product_id=product.id) }}" class="text-decoration-none">{{ product.name }}</a>
+                        </p>
+                        <p class="list-row-sub">{{ product.sku }} — {{ product.location_display() }}</p>
+                    </div>
+                    <span class="stock-badge low"><span class="status-dot"></span>{{ product.quantity }} un.</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted mb-0"><i class="bi bi-check-circle text-success"></i> Nenhum produto com estoque baixo no momento.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tab-mais-buscados">
+        <div class="section-card">
+            {% if most_searched %}
+                {% for product, total in most_searched %}
+                <div class="list-row">
+                    <div class="icon-tile tile-primary">{{ loop.index }}</div>
+                    <div class="list-row-main">
+                        <p class="list-row-title">
+                            <a href="{{ url_for('products.detail', product_id=product.id) }}" class="text-decoration-none">{{ product.name }}</a>
+                        </p>
+                        <p class="list-row-sub">{{ product.sku }}</p>
+                    </div>
+                    <span class="badge bg-primary rounded-pill fs-6">{{ total }}x</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted mb-0">Ainda não há buscas registradas.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tab-nao-encontrados">
+        <div class="section-card">
+            {% if not_found_searches %}
+                <p class="text-muted">Termos buscados sem nenhum produto encontrado — uma pista do que passar a estocar.</p>
+                {% for termo, total in not_found_searches %}
+                <div class="list-row">
+                    <div class="icon-tile tile-muted"><i class="bi bi-search"></i></div>
+                    <div class="list-row-main">
+                        <p class="list-row-title">"{{ termo }}"</p>
+                    </div>
+                    <span class="badge bg-secondary rounded-pill fs-6">{{ total }}x</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted mb-0">Nenhuma busca sem resultado registrada.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tab-ocupacao">
+        <div class="section-card">
+            {% if occupancy %}
+                {% for aisle, warehouse, total_produtos, total_unidades in occupancy %}
+                <div class="list-row">
+                    <div class="icon-tile tile-primary"><i class="bi bi-geo-alt"></i></div>
+                    <div class="list-row-main">
+                        <p class="list-row-title">Corredor {{ aisle }} <span class="text-muted fw-normal">— {{ warehouse }}</span></p>
+                        <p class="list-row-sub">{{ total_produtos }} produto(s) diferente(s)</p>
+                    </div>
+                    <span class="badge bg-light text-dark border fs-6">{{ total_unidades }} un.</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted mb-0">Nenhum produto cadastrado ainda.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('movements.list_movements') }}" class="btn btn-outline-dark">
+        <i class="bi bi-clock-history"></i> Ver Histórico Completo de Movimentações
+    </a>
+</div>
+{% endblock %}

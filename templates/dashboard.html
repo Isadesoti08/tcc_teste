@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Locate Toy{% endblock %}
+
+{% block content %}
+<h2 class="mb-1">Olá, {{ current_user.name }}!</h2>
+<p class="text-muted mb-4">Perfil: <strong>{{ current_user.role|capitalize }}</strong></p>
+
+<div class="row g-3">
+    <div class="col-12 col-md-6">
+        <a href="{{ url_for('search.search') }}" class="btn btn-primary btn-lg dashboard-tile w-100 py-4">
+            <i class="bi bi-search"></i> Buscar Produto
+        </a>
+    </div>
+    <div class="col-12 col-md-6">
+        <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-secondary btn-lg dashboard-tile w-100 py-4">
+            <i class="bi bi-box-seam"></i> Ver Todos os Produtos
+        </a>
+    </div>
+    {% if current_user.role in ["gerente", "repositor"] %}
+    <div class="col-12 col-md-6">
+        <a href="{{ url_for('movements.list_movements') }}" class="btn btn-outline-dark btn-lg dashboard-tile w-100 py-4">
+            <i class="bi bi-arrow-left-right"></i> Histórico de Movimentações
+        </a>
+    </div>
+    {% endif %}
+    {% if current_user.role == "gerente" %}
+    <div class="col-12 col-md-6">
+        <a href="{{ url_for('reports.index') }}" class="btn btn-outline-warning btn-lg dashboard-tile w-100 py-4">
+            <i class="bi bi-bar-chart"></i> Relatórios
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Locate Toy{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-dark mb-4">
+        <div class="container">
+            <a href="{{ url_for('dashboard') }}" class="navbar-brand d-flex align-items-center gap-2">
+    <i class="bi bi-box-seam"></i> Locate Toy
+</a>
+
+{% if current_user.is_authenticated %}
+<a href="{{ url_for('dashboard') }}" class="btn btn-outline-light btn-sm d-flex align-items-center justify-content-center"
+   style="width: 34px; height: 34px; border-radius: 50%;" title="Início" aria-label="Ir para o início">
+    <i class="bi bi-house-door"></i>
+</a>
+
+            <div class="dropdown">
+                <button class="btn btn-outline-light btn-sm dropdown-toggle d-flex align-items-center gap-2"
+                        type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-person-circle"></i>
+                    <span class="d-none d-sm-inline">{{ current_user.name }}</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><span class="dropdown-item-text text-muted small">Perfil: {{ current_user.role|capitalize }}</span></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
+                            <i class="bi bi-box-arrow-right"></i> Sair
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="container flex-grow-1">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="lt-footer">
+        🧸 Locate Toy — Sistema de Localização e Gestão de Produtos • Projeto de TCC
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Fecha automaticamente cada mensagem flash depois de 5 segundos,
+        // para não ficar poluindo a tela indefinidamente.
+        document.querySelectorAll(".alert").forEach(function (alerta) {
+            setTimeout(function () {
+                const instancia = bootstrap.Alert.getOrCreateInstance(alerta);
+                instancia.close();
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

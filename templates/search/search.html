@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Busca - Locate Toy{% endblock %}
+
+{% block content %}
+<div class="search-hero">
+    <h2 class="mb-3"><i class="bi bi-search"></i> Buscar Produto</h2>
+    <form method="GET" action="{{ url_for('search.search') }}">
+        <div class="input-group input-group-lg">
+            <input type="text" name="q" class="form-control"
+                   placeholder="Digite o nome, SKU ou categoria..."
+                   value="{{ query }}" autofocus>
+            <button type="submit" class="btn btn-light fw-bold">Buscar</button>
+        </div>
+        <small class="opacity-75 d-block mt-2">
+            Exemplos: "boneca", "BON-001", "Jogos de Tabuleiro"
+        </small>
+    </form>
+</div>
+
+{% if query %}
+    {% if results %}
+        <p class="text-muted">{{ results|length }} resultado(s) para "<strong>{{ query }}</strong>"</p>
+        <div class="row g-3">
+            {% for product in results %}
+            <div class="col-12 col-md-6">
+                <div class="card shadow-sm h-100 {{ 'border-danger' if product.is_low_stock() else '' }}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h4 class="card-title mb-1">{{ product.name }}</h4>
+                            <code class="fs-6">{{ product.sku }}</code>
+                        </div>
+                        <p class="text-muted mb-3">{{ product.category }}</p>
+
+                        <div class="p-3 bg-light rounded mb-2">
+                            <div class="fs-5 result-location">
+                                <i class="bi bi-geo-alt-fill text-primary"></i> {{ product.location_display() }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fs-3 fw-bold {{ 'text-danger' if product.is_low_stock() else 'text-success' }}">
+                                {{ product.quantity }}
+                            </span>
+                            <span class="text-muted">unidade(s) em estoque</span>
+                            {% if product.is_low_stock() %}
+                            <span class="badge bg-danger">Estoque baixo</span>
+                            {% endif %}
+                        </div>
+
+                        <a href="{{ url_for('products.detail', product_id=product.id) }}"
+                           class="btn btn-outline-secondary btn-sm mt-3">
+                            Ver mais detalhes
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            <i class="bi bi-info-circle"></i> Nenhum produto encontrado para "<strong>{{ query }}</strong>". Verifique a digitação
+            ou tente buscar por uma categoria (ex.: "Bonecos", "Veículos").
+        </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,325 @@
+:root {
+    --lt-primary: #2f6fed;
+    --lt-primary-dark: #1d4fb8;
+    --lt-accent: #ff8a3d;
+    --lt-bg: #f4f6fb;
+    --lt-text: #1f2937;
+    --lt-radius: 0.75rem;
+}
+
+body {
+    font-family: "Nunito", "Segoe UI", sans-serif;
+    background-color: var(--lt-bg);
+    color: var(--lt-text);
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+    background: linear-gradient(90deg, var(--lt-primary) 0%, var(--lt-primary-dark) 100%) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-brand {
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: 0.3px;
+}
+
+/* ---------- Cards ---------- */
+.card {
+    border: none;
+    border-radius: var(--lt-radius);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10);
+}
+
+/* ---------- Atalhos do dashboard ---------- */
+.dashboard-tile {
+    border-radius: var(--lt-radius);
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.15s ease;
+}
+
+.dashboard-tile:hover {
+    transform: translateY(-3px);
+}
+
+/* ---------- Tabelas ---------- */
+.table thead {
+    background-color: #eef1f8;
+}
+
+.table-warning {
+    border-left: 4px solid var(--lt-accent);
+}
+
+/* ---------- Botões ---------- */
+.btn {
+    border-radius: 0.5rem;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background-color: var(--lt-primary);
+    border-color: var(--lt-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--lt-primary-dark);
+    border-color: var(--lt-primary-dark);
+}
+
+/* ---------- Tela de login ---------- */
+.login-wrapper {
+    min-height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- Miniatura de foto na listagem ---------- */
+.product-thumb {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+.product-thumb-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.5rem;
+    background-color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 1.2rem;
+}
+
+/* ---------- Rodapé ---------- */
+.lt-footer {
+    text-align: center;
+    padding: 1.5rem 0;
+    color: #6b7280;
+    font-size: 0.85rem;
+}
+/* ---------- Lista de produtos (estilo cartão) ---------- */
+.product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.product-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    border: 1px solid #e5e9f2;
+    border-radius: 1rem;
+    padding: 0.6rem 1.1rem;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.product-row:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.product-row.low-stock {
+    background-color: #fff4ec;
+    border-color: #ffd9b8;
+}
+
+.product-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e6edfd;
+    color: var(--lt-primary);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.product-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    text-decoration: none;
+}
+
+.product-info .product-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin: 0;
+    color: var(--lt-text);
+}
+
+.product-info .product-sku {
+    font-size: 0.78rem;
+    color: #9aa1ac;
+    margin: 0;
+}
+
+.product-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 0.85rem;
+    color: #6b7280;
+    flex-wrap: wrap;
+}
+
+.product-meta .meta-col {
+    min-width: 100px;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.ok { background-color: #2fa84f; }
+.status-dot.low { background-color: #e5484d; }
+
+.product-actions .btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+}
+
+.product-actions .btn:hover {
+    background-color: #f1f3f9;
+}
+
+.product-list-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1.1rem 0.5rem;
+    font-size: 0.78rem;
+    color: #9aa1ac;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+/* ---------- Ícones circulares (relatórios, movimentações) ---------- */
+.icon-tile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.icon-tile.tile-primary { background-color: #e6edfd; color: var(--lt-primary); }
+.icon-tile.tile-success { background-color: #e7f7ec; color: #1f8a3b; }
+.icon-tile.tile-danger  { background-color: #fdeaea; color: #c8302f; }
+.icon-tile.tile-muted   { background-color: #eef0f4; color: #6b7280; }
+
+/* ---------- Cartão de conteúdo ---------- */
+.section-card {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 1.25rem 1.5rem;
+}
+
+/* ---------- Abas (relatórios) no estilo do site ---------- */
+.nav-tabs {
+    border-bottom: none;
+    gap: 0.4rem;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    border-radius: 999px;
+    color: #6b7280;
+    font-weight: 600;
+    padding: 0.5rem 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: #eef1f8;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: var(--lt-primary);
+    color: #ffffff;
+}
+
+/* ---------- Linhas de lista genéricas ---------- */
+.list-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background-color: #ffffff;
+    border: 1px solid #e5e9f2;
+    border-radius: 1rem;
+    padding: 0.75rem 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.list-row-main { flex-grow: 1; min-width: 0; }
+.list-row-title { font-weight: 700; margin: 0; font-size: 0.92rem; }
+.list-row-sub { margin: 0; font-size: 0.8rem; color: #9aa1ac; }
+.list-row-time { font-size: 0.78rem; color: #9aa1ac; white-space: nowrap; }
+
+/* ---------- Bloco de destaque da busca ---------- */
+.search-hero {
+    background: linear-gradient(135deg, var(--lt-primary) 0%, var(--lt-primary-dark) 100%);
+    border-radius: 1.25rem;
+    padding: 2rem 1.5rem;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+}
+
+.result-location {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+}

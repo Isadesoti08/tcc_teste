@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} - Locate Toy{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('products.list_products') }}" class="btn btn-sm btn-outline-secondary mb-3">← Voltar</a>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                {% if product.photo_filename %}
+                <img src="{{ url_for('static', filename='uploads/' + product.photo_filename) }}"
+                     alt="{{ product.name }}" class="img-fluid rounded">
+                {% else %}
+                <div class="bg-light text-center p-5 rounded text-muted">Sem foto</div>
+                {% endif %}
+            </div>
+            <div class="col-md-9">
+                <h2>{{ product.name }}</h2>
+                <p><code>{{ product.sku }}</code> — {{ product.category }}</p>
+
+                <h4 class="mt-4"><i class="bi bi-geo-alt-fill text-primary"></i> {{ product.location_display() }}</h4>
+
+                <p class="fs-5">
+                    Quantidade em estoque: <strong>{{ product.quantity }}</strong>
+                    {% if product.is_low_stock() %}
+                    <span class="badge bg-danger">Estoque baixo</span>
+                    {% endif %}
+                </p>
+{% if current_user.role in ["gerente", "repositor"] %}
+<a href="{{ url_for('movements.register', product_id=product.id) }}" class="btn btn-outline-success">
+    <i class="bi bi-arrow-left-right"></i> Movimentar Estoque
+</a>
+{% endif %}
+
+{% if current_user.role == "gerente" %}
+<a href="{{ url_for('products.edit', product_id=product.id) }}" class="btn btn-outline-primary">
+    Editar Produto
+</a>
+{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

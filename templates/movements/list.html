@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Movimentações - Locate Toy{% endblock %}
+
+{% block content %}
+<h2 class="mb-3">Histórico de Movimentações</h2>
+
+<div class="section-card">
+{% if movements %}
+    {% for mov in movements %}
+    <div class="list-row">
+        {% if mov.movement_type == "entrada" %}
+        <div class="icon-tile tile-success"><i class="bi bi-arrow-up-circle"></i></div>
+        {% elif mov.movement_type == "saida" %}
+        <div class="icon-tile tile-danger"><i class="bi bi-arrow-down-circle"></i></div>
+        {% else %}
+        <div class="icon-tile tile-primary"><i class="bi bi-shuffle"></i></div>
+        {% endif %}
+
+        <div class="list-row-main">
+            <p class="list-row-title">
+                <a href="{{ url_for('products.detail', product_id=mov.product_id) }}" class="text-decoration-none">{{ mov.product.name }}</a>
+                <span class="badge {{ 'bg-success' if mov.movement_type == 'entrada' else ('bg-danger' if mov.movement_type == 'saida' else 'bg-primary') }} rounded-pill ms-1">
+                    {{ mov.movement_type|capitalize }}
+                </span>
+            </p>
+            <p class="list-row-sub">
+                {% if mov.movement_type == "transferencia" %}
+                    {{ mov.previous_location }} → {{ mov.new_location }}
+                {% else %}
+                    {{ mov.previous_quantity }} → {{ mov.new_quantity }} unidades
+                {% endif %}
+                — por {{ mov.user.name }}
+                {% if mov.notes %} · {{ mov.notes }}{% endif %}
+            </p>
+        </div>
+        <span class="list-row-time">{{ mov.timestamp.strftime("%d/%m/%Y %H:%M") }}</span>
+    </div>
+    {% endfor %}
+{% else %}
+    <p class="text-muted mb-0">Nenhuma movimentação registrada ainda.</p>
+{% endif %}
+</div>
+{% endblock %}

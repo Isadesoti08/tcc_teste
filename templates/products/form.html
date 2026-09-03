@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}{{ "Editar Produto" if product else "Novo Produto" }} - Locate Toy{% endblock %}
+
+{% block content %}
+<h2>{{ "Editar Produto" if product else "Novo Produto" }}</h2>
+
+<form method="POST" enctype="multipart/form-data" class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label">Nome do produto</label>
+        <input type="text" name="name" class="form-control"
+               value="{{ form_data.name if form_data else (product.name if product else '') }}" required>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">SKU</label>
+        <input type="text" name="sku" class="form-control"
+               value="{{ form_data.sku if form_data else (product.sku if product else '') }}" required>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Categoria</label>
+        <select name="category" class="form-select" required>
+            <option value="">Selecione...</option>
+            {% for categoria in ["Bonecos", "Pelúcias", "Jogos de Tabuleiro", "Veículos", "Educativos"] %}
+            <option value="{{ categoria }}"
+                {% set atual = form_data.category if form_data else (product.category if product else "") %}
+                {{ "selected" if categoria == atual else "" }}>
+                {{ categoria }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Corredor</label>
+        <input type="text" name="aisle" class="form-control"
+               value="{{ form_data.aisle if form_data else (product.aisle if product else '') }}" required>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Prateleira</label>
+        <input type="text" name="shelf" class="form-control"
+               value="{{ form_data.shelf if form_data else (product.shelf if product else '') }}" required>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Seção (opcional)</label>
+        <input type="text" name="section" class="form-control"
+               value="{{ form_data.section if form_data else (product.section if product and product.section else '') }}">
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Depósito/Área</label>
+        <input type="text" name="warehouse" class="form-control"
+               value="{{ form_data.warehouse if form_data else (product.warehouse if product else 'Loja') }}">
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Quantidade</label>
+        <input type="number" name="quantity" min="0" class="form-control"
+               value="{{ form_data.quantity if form_data else (product.quantity if product else 0) }}" required>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Foto do produto (opcional)</label>
+        <input type="file" name="photo" class="form-control" accept="image/*">
+        {% if product and product.photo_filename %}
+        <div class="mt-2">
+            <img src="{{ url_for('static', filename='uploads/' + product.photo_filename) }}"
+                 alt="Foto atual" style="max-width: 120px;" class="img-thumbnail">
+            <small class="text-muted d-block">Foto atual (envie uma nova para substituir)</small>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a href="{{ url_for('products.list_products') }}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
